@@ -25,6 +25,76 @@
 
 <p><img src="images/FlowOfInformation.png" alt="Flow of Information"></p>
 
+<p>The picture above describes the flow of information that is implemented in this project. The computer that is investigated is positioned on the left, the server is on the right. It is booted using a custom os, the <a href="https://github.com/raqet/acquisition-client">client</a> that will connect over an IP-VPN to the <a href="https://github.com/raqet/acquisition-server">server</a>. The client-side os is generated with unique information for that client by the server. The user needs to setup a case on the server, describe computer that is about to be investigated and create a bootable CD, disk image or PXE configuration for this computer. As this OS is very small (about 20Mb) it is easy to send it to a remote location. As the OS contains unique information, the server can identify the OS when it is booted. It can link that instance of the OS with the configured case and computer.</p>
+
+<p>The server has by default a webserver for basic case management on port 5556 and a webserver for the clients on port 5555. When accessing the server website it shows the current configured cases.</p>
+
+<p><img src="images/raqet_MainPage1.png" alt="Main Page"></p>
+
+<p>The case defaultcase is created to handle the situation where users use the same OS multiple times. The client-OS calculates a fingerprint of the hardware and the server uses it to distinguish this unintended and undesirable situation.</p>
+
+<p><img src="images/raqet_CaseView.png" alt="View Case"></p>
+
+<p>The normal process is to start by making a new case. The case is given a normal name which can be descriptive and contain any characters, but also a path. The path is not allowed to contain any special characters as it will be used as a path in the CIFS export of the data and also in urls of the restfull API of the server.</p>
+
+<p><img src="images/raqet_AddCase.png" alt="Add Case"></p>
+
+<p>After adding a case (for example the case Huge case in 2015) it will be added on the main screen of the webinterface.
+The details of the case can be viewed.</p>
+
+<p><img src="images/raqet_CaseViewAddedCase.png" alt="View after adding a Case"></p>
+
+<p>Within the case a computer can be added. (Field shows wrong captions, sorry). One can set a free format computername, the computername as it will be used as URL and a unique client-id that will be used to link the generated OS to the administrative client.</p>
+
+<p><img src="images/raqet_AddComputer.png" alt="Add computer"></p>
+
+<p>The case information will now show both the case details as well as the configured computers.</p>
+
+<p><img src="images/raqet_ComputerViewAddedComputer.png" alt="Added a computer"></p>
+
+<p>When viewing the details of the configured computer a download button is presented that allows the investigator to download a bootable ISO image. This image is also usable as harddisk image.</p>
+
+<p><img src="images/raqet_ViewComputer.png" alt="View Computer"></p>
+
+<p>So the user downloads the ISO image.</p>
+
+<p><img src="images/raqet_DownloadISO.png" alt="Download ISO"></p>
+
+<p>The ISO image is started on the to be acquired system. This assumes the user to have physical control of the system. This control is out of scope of the project bus is assumed to be based on legal warrants that will be required in (almost?) all jurisdictions. When using this tool as a corporate investigator in your own corporate environment things will be legally easier compared to an international warrant issued from one jurisdiction to the other. Point being: this is not hacking nor will this not automatically boot. It requires coordinated cooperation with the party that physically owns the machine.</p>
+
+<p><img src="images/raqet_StartClient_recol.png" alt="Start Client"></p>
+
+<p>When the client has booted  it will register at the server. The server will identify the client based on the number embedded in the OS and link the clients disks to a virtual file system that is exported using CIFS. To access the virtual filesystem it needs to be mounted using windows or linux.</p>
+
+<p><img src="images/raqet_MountCIFS_recol.png" alt="Mount using SMB using linux or windows"></p>
+
+<p>The virtual filesystem will show a directory scheme consisting of the name of the case and the name of the computer.
+Within this directory several files appear, some of which are physical (stored in /var/raqet) and some are virtual.
+The virtual file shows as a raw image with the size and content of the physical disk of the remote computer. The content is however not physically stored on the server but retreived on the fly.</p>
+
+<p><img src="images/raqet_SambaShareInfo_recol.png" alt="Samba share"></p>
+
+<p>When data is read  from the virtual file, it is copied and cached on the physical local filesystem. A bitmap is used to register which 64k blocks are retrieved and present and thus are stored locally. E.g. doing a sleuthkit mmls on 
+the virtual file will lead to the storage of just the partition table. A sleuthkit fls -r on a partition will store most of the filesystem metadata etc. The local file will contain just the retrieved data. This allows to selectively acquire content, but still maintain benefits like filenames of deleted files, all timestamps. Order of inodes etc. etc.</p>
+
+<p><img src="images/raqet_SambaShareInfoWithPartial_recol.png" alt="Samba share with sparse file"></p>
+
+<p>A simple triage scenario would just retreive /var/log of the remote computers and filesystem metadata. This could be combined with triage based on filesystem metadata (timestamps, sizes, kerwords in filenames). </p>
+
+<p>The tools is not specifically intended for full keyword or file hash based triage of the remote disk content, as this will void the benefits of acquiring just a partial image.</p>
+
+<h4>
+<a id="build" class="anchor" href="#build" aria-hidden="true"><span class="octicon octicon-link"></span></a>Build</h4>
+
+<p>Both client and server have the ability to create a debian source package. This can be built using the pbuild framework and will result in installable debian packages.</p>
+
+<p>Feel free to ask for help at info @ raqet.org</p>
+
+<h3>
+<a id="disclaimer" class="anchor" href="#disclaimer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disclaimer</h3>
+
+<p>The project is a proof of concept. It is intended to show the opportunities, risks and performance of an alternative acquisition process.</p>
+
 <h3>
 <a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
