@@ -98,7 +98,52 @@ the virtual file will lead to the storage of just the partition table. A sleuthk
 <h4>
 <a id="build" class="anchor" href="#build" aria-hidden="true"><span class="octicon octicon-link"></span></a>Build</h4>
 
-<p>Both client and server have the ability to create a debian source package. This can be built using the pbuild framework and will result in installable debian packages.</p>
+<p>Both client and server have the ability to create a debian source package. This can be built using the pbuilder framework and will result in installable debian packages.</p>
+<p>Prebuild packages for Ubuntu 14.04 can be downloaded <a href="https://github.com/raqet/acquisition-server/releases">at the release page</a></p>
+
+<p>The easiest way to build from source using pbuilder is to clone both
+repositories.<p>
+
+<pre>
+sudo apt-get install git-core pbuilder
+pbuilder --create
+
+git clone https://github.com/raqet/acquisition-server.git
+cd acquisition-server/
+./build_src
+cd ..
+pbuilder --build raqetserver_0.1.dsc
+
+git clone https://github.com/raqet/acquisition-client.git
+cd acquisition-client
+make debiansourcepkg
+cd ..
+pbuilder --build raqetclient_0.1-1.dsc 
+</pre>
+
+<p>The debian packages will be placed in /var/cache/pbuilder/result/</p>
+
+<p>To build from source without the pbuilder framework:</p>
+
+<pre>
+sudo apt-get install debhelper git-core build-essential libssl-dev libncurses5-dev \
+                unzip python gawk wget subversion whois syslinux \
+                syslinux-common openjdk-7-jdk fastjar openjdk-7-doc ant
+
+git clone https://github.com/raqet/acquisition-server.git
+cd acquisition-server/
+ant
+cd ..
+
+git clone https://github.com/raqet/acquisition-client.git
+cd acquisition-client
+make
+cd ..
+
+</pre>
+
+As builing the client compiles openwrt from source it will take long before it
+is finished.
 
 <p>Feel free to ask for help at info @ raqet.org</p>
 
