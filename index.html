@@ -41,6 +41,8 @@ While performing this investigation a server side sparse evidence file is writte
 
 <p>The server has by default a webserver for basic case management on port 5556 and a webserver for the clients on port 5555. When accessing the server website it shows the current configured cases.</p>
 
+<B><H4>WARNING: the pictures show the an older version where case management shared the port with the client. Replace 5555 with 5556 and note the /gui/ part</H4></B>
+
 <p><img src="images/raqet_MainPage1.png" alt="Main Page"></p>
 
 <p>The case defaultcase is created to handle the situation where users use the same OS multiple times. The client-OS calculates a fingerprint of the hardware and the server uses it to distinguish this unintended and undesirable situation.</p>
@@ -123,12 +125,48 @@ pbuilder --build raqetclient_0.1-1.dsc
 
 <p>The debian packages will be placed in /var/cache/pbuilder/result/</p>
 
-<p>To build from source without the pbuilder framework:</p>
+<p>To build from source without the pbuilder framework you first need to
+install the build dependencies:</p>
+
+<UL>
+    <LI>debhelper</LI>
+    <LI>git-core</LI>
+    <LI>build-essential</LI>
+    <LI>libssl-dev</LI>
+    <LI>libncurses5-dev</LI>
+    <LI>unzip</LI>
+    <LI>python</LI>
+    <LI>gawk</LI>
+    <LI>wget</LI>
+    <LI>subversion</LI>
+    <LI>whois</LI>
+    <LI>syslinux</LI>
+    <LI>syslinux-common</LI>
+    <LI>openjdk-7-jdk</LI>
+    <LI>fastjar</LI>
+    <LI>openjdk-7-doc</LI>
+    <LI>ant</LI>
+    <LI>libiscsi1i (&gt;=1.15.1-1) </LI>
+</UL>
+
+The version of libiscsi in ubuntu 14.04 is too old, the  <a
+    href="https://github.com/raqet/acquisition-server/releases">releases
+    page</a> contain a binary package that can be used, alternatively the git
+repo <a href="https://github.com/raqet/raqet-dependencies">raqet-dependencies</a>
+contains source packages. Possibly the version included in XenialXerus works,
+but this hasn't been tested.
 
 <pre>
 sudo apt-get install debhelper git-core build-essential libssl-dev libncurses5-dev \
                 unzip python gawk wget subversion whois syslinux \
                 syslinux-common openjdk-7-jdk fastjar openjdk-7-doc ant
+
+wget https://github.com/raqet/acquisition-server/releases/download/v0.1/libiscsi1_1.15.1-1_amd64.deb
+wget https://github.com/raqet/acquisition-server/releases/download/v0.1/libiscsi-dev_1.15.1-1_amd64.deb
+wget https://github.com/raqet/acquisition-server/releases/download/v0.1/libiscsi-bin_1.15.1-1_amd64.deb
+sudo dpkg -i libiscsi1_1.15.1-1_amd64.deb
+sudo dpkg -i libiscsi-dev_1.15.1-1_amd64.deb
+sudo dpkg -i libiscsi-bin_1.15.1-1_amd64.deb
 
 git clone https://github.com/raqet/acquisition-server.git
 cd acquisition-server/
