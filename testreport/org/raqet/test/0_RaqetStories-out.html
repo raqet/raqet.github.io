@@ -1,0 +1,152 @@
+<html xmlns:string="xalan://java.lang.String" xmlns:lxslt="http://xml.apache.org/xslt">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Standard Output from RaqetStories</title>
+</head>
+<body>
+<pre>Processing system properties {}
+Using controls EmbedderControls[batch=false,skip=false,generateViewAfterStories=true,ignoreFailureInStories=false,ignoreFailureInView=false,verboseFailures=false,verboseFiltering=false,storyTimeoutInSecs=300,failOnStoryTimeout=false,threads=1]
+
+(BeforeStories)
+
+Running story org/raqet/test/client_administration.story
+!-- Copyright (c) 2015, Netherlands Forensic Institute --!
+!-- All rights reserved. --!
+(org/raqet/test/client_administration.story)
+Narrative:
+In order to inspect the status of the system
+As a analyst
+I want to check the list of current active clients
+Scenario: Check the current registered clients.
+Given the acquisition server is running
+Given the client is configured for case case1
+Given the client is configured for computer computer1
+When requesting the list of investigationcases
+[{"urlcasename":"defaultcase","casename":"defaultcase"}]
+Then the list of investigationcases contains 1 items
+{"urlcasename":"defaultcase","casename":"defaultcase"}
+And the list of investigationcases contains defaultcase
+Given the acquisition server is running
+When adding a investigationcase case1
+"Success"
+Then no error must be given
+When requesting the list of investigationcases
+[{"urlcasename":"defaultcase","casename":"defaultcase"},{"urlcasename":"case1","casename":"case1"}]
+Then the list of investigationcases contains 2 items
+{"urlcasename":"defaultcase","casename":"defaultcase"}
+{"urlcasename":"case1","casename":"case1"}
+And the list of investigationcases contains case1
+When requesting the list of computers for investigationcase case1
+[]
+Then the list of computers is empty
+When adding a computer computer1 with clientid testingclient to case1
+"Success"
+Then no error must be given
+When requesting the list of computers for investigationcase case1
+[{"urlcomputername":"computer1","computername":"computer1"}]
+Then the list of computers contains 1 items
+And the list of computers contains computer1
+Given the acquisition server is running
+When adding a investigationcase case2
+And requesting the list of computers for investigationcase case2
+[]
+Then the list of computers is empty
+Given the acquisition server is running
+When adding a investigationcase case3
+And adding a investigationcase case3
+"Failed"
+Then the error Failed must be given
+When a new client with name testingclient is started
+virtualevidence-0000-testingclient_vda.dd
+virtualevidence-0001-testingclient_sda.dd
+virtualevidence-0003-testingclient_sdb.dd
+Then the 3 disks of testingclient are exported on a SMB share within 30 seconds
+When requesting the list of active clients as text
+Then the list of active clients in html contains testingclient
+When requesting the list of active clients as json
+{"192.168.13.89:3260":[{"evidenceDirectory":"/var/raqet/case1/computer1","targetName":"iqn.2003-01.org.linux-iscsi.client-testingclient:sn.99f490480a17","lun":0,"evidenceBaseFileName":"0000-testingclient_vda.dd","deviceType":"DIRECT_ACCESS","portal":"192.168.13.89:3260,1","capacity":{"logicalBlockAddress":3009,"blockSize":512},"targetAddress":{"username":"","password":"","portalUrl":"192.168.13.89:3260"}},{"evidenceDirectory":"/var/raqet/case1/computer1","targetName":"iqn.2003-01.org.linux-iscsi.client-testingclient:sn.99f490480a17","lun":1,"evidenceBaseFileName":"0001-testingclient_sda.dd","deviceType":"DIRECT_ACCESS","portal":"192.168.13.89:3260,1","capacity":{"logicalBlockAddress":2999,"blockSize":512},"targetAddress":{"username":"","password":"","portalUrl":"192.168.13.89:3260"}},{"evidenceDirectory":"/var/raqet/case1/computer1","targetName":"iqn.2003-01.org.linux-iscsi.client-testingclient:sn.99f490480a17","lun":3,"evidenceBaseFileName":"0003-testingclient_sdb.dd","deviceType":"DIRECT_ACCESS","portal":"192.168.13.89:3260,1","capacity":{"logicalBlockAddress":3029,"blockSize":512},"targetAddress":{"username":"","password":"","portalUrl":"192.168.13.89:3260"}}]}
+[{"evidenceDirectory":"/var/raqet/case1/computer1","targetName":"iqn.2003-01.org.linux-iscsi.client-testingclient:sn.99f490480a17","lun":0,"evidenceBaseFileName":"0000-testingclient_vda.dd","deviceType":"DIRECT_ACCESS","portal":"192.168.13.89:3260,1","capacity":{"logicalBlockAddress":3009,"blockSize":512},"targetAddress":{"username":"","password":"","portalUrl":"192.168.13.89:3260"}},{"evidenceDirectory":"/var/raqet/case1/computer1","targetName":"iqn.2003-01.org.linux-iscsi.client-testingclient:sn.99f490480a17","lun":1,"evidenceBaseFileName":"0001-testingclient_sda.dd","deviceType":"DIRECT_ACCESS","portal":"192.168.13.89:3260,1","capacity":{"logicalBlockAddress":2999,"blockSize":512},"targetAddress":{"username":"","password":"","portalUrl":"192.168.13.89:3260"}},{"evidenceDirectory":"/var/raqet/case1/computer1","targetName":"iqn.2003-01.org.linux-iscsi.client-testingclient:sn.99f490480a17","lun":3,"evidenceBaseFileName":"0003-testingclient_sdb.dd","deviceType":"DIRECT_ACCESS","portal":"192.168.13.89:3260,1","capacity":{"logicalBlockAddress":3029,"blockSize":512},"targetAddress":{"username":"","password":"","portalUrl":"192.168.13.89:3260"}}]
+Then the list of active clients in json contains testingclient
+java server stopped
+
+
+Running story org/raqet/test/client_reading.story
+!-- Copyright (c) 2015, Netherlands Forensic Institute --!
+!-- All rights reserved. --!
+(org/raqet/test/client_reading.story)
+Narrative:
+In order to read the remote disks
+As a analyst
+I want to read data from the virual SMB file
+Scenario: Client registers with server
+Given the acquisition server is running
+Given the client is configured for case defaultcase
+Given the client is configured for computer testingclient_e31c59cc9c15c72e3f37fb1e31630440
+When a new client with name testingclient is started
+virtualevidence-0000-testingclient_vda.dd
+virtualevidence-0001-testingclient_sda.dd
+virtualevidence-0003-testingclient_sdb.dd
+Then the 3 disks of testingclient are exported on a SMB share within 30 seconds
+Given the acquisition server is running
+When parallel reading in 20 threads 19 bytes at offset 101 of disk 0 on client testingclient
+Then the read bytes should contain "afbf629c1b776877dec"
+When reading 20 bytes at offset 100 of disk 0 on the evidence storage of testingclient
+Then the read bytes should contain "5afbf629c1b776877dec"
+When reading 15 bytes at offset 65536 of disk 0 on the evidence storage of testingclient
+Then the read bytes should be zeros
+Given a readable evidence storagebitmap of disk 0 of testingclient
+When checking availability of bytes at offset 100 in the evidence storagebitmap
+Then the availability status should be true
+When checking availability of bytes at offset 65536 in the evidence storagebitmap
+Then the availability status should be false
+When reading 15 bytes at offset 65536 of disk 0 on client testingclient
+Then the read bytes should contain "BLOCK  00000080"
+When reading 15 bytes at offset 65536 of disk 0 on the evidence storage of testingclient
+Then the read bytes should contain "BLOCK  00000080"
+Given a readable evidence storagebitmap of disk 0 of testingclient
+When checking availability of bytes at offset 65536 in the evidence storagebitmap
+Then the availability status should be true
+When parallel reading in 20 threads 19 bytes at offset 101 of disk 0 on client testingclient
+Then the read bytes should contain "afbf629c1b776877dec"
+When parallel reading with skips of 65536 in 20 threads 19 bytes at offset 101 of disk 3 on client testingclient
+Given a readable evidence storagebitmap of disk 3 of testingclient
+When checking availability of bytes from offset 101 until 1245285 in the evidence storagebitmap
+Then the availability status should be true
+java server stopped
+
+
+Running story org/raqet/test/client_registration.story
+!-- Copyright (c) 2015, Netherlands Forensic Institute --!
+!-- All rights reserved. --!
+(org/raqet/test/client_registration.story)
+Narrative:
+In order to identify new clients
+As a server
+I want to known when new clients are available
+Scenario: Client registers with server
+Given the acquisition server is running
+Given the client is configured for case defaultcase
+Given the client is configured for computer testingclient_e31c59cc9c15c72e3f37fb1e31630440
+When a new client with name testingclient is started
+virtualevidence-0000-testingclient_vda.dd
+virtualevidence-0001-testingclient_sda.dd
+virtualevidence-0003-testingclient_sdb.dd
+Then the 3 disks of testingclient are exported on a SMB share within 30 seconds
+Given the acquisition server is running
+!-- a second registration should not lead to more exported disks --!
+When waiting for 30 seconds
+virtualevidence-0000-testingclient_vda.dd
+virtualevidence-0001-testingclient_sda.dd
+virtualevidence-0003-testingclient_sdb.dd
+Then the 3 disks of testingclient are exported on a SMB share within 0 seconds
+java server stopped
+
+
+
+(AfterStories)
+
+Generating reports view to '/usr/users/work/acquisition-server/dist/test/target/jbehave' using formats '[stats, console, txt, junitscenarioreporter]' and view properties '{navigator=ftl/jbehave-navigator.ftl, views=ftl/jbehave-views.ftl, reports=ftl/jbehave-reports-with-totals.ftl, nonDecorated=ftl/jbehave-report-non-decorated.ftl, decorated=ftl/jbehave-report-decorated.ftl, maps=ftl/jbehave-maps.ftl}'
+Reports view generated with 3 stories (of which 0 pending) containing 3 scenarios (of which 0 pending)
+</pre>
+</body>
+</html>

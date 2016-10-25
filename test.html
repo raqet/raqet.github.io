@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Raqet, Remote Acquisition and Triage : ">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Raqet, Remote Acquisition and Triage</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/raqet">View on GitHub</a>
+
+          <h1 id="project_title">Raqet, Remote Acquisition and Triage</h1>
+          <h2 id="project_tagline">Test</h2>
+
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>
+<a id="test" class="anchor" href="#test" aria-hidden="true"><span class="octicon octicon-link"></span></a>Test during build</h3>
+
+<p>The client and server have a collaborative automated test. This means that
+it is possible to start the client in QEMU and make it connect to a local
+server for automated testing.<p>
+
+<h4>Start Client</h4>
+
+The client can be started using the command:
+
+<pre>
+acquisition-client$ sudo make run-using-tap
+[sudo] password for USERNAME: 
+[ ! -e /usr/bin/pychecker ] || pychecker `find files -name \*.py`
+cd files; find . | cpio -H newc -o > ../build/initrd.img
+33 blocks
+cd testing/ramfs_files/ ; find . | cpio -H newc -o > ../../build/testingrd-extra.img
+7 blocks
+cat build/initrd.img build/testingrd-extra.img >build/testingrd.img
+echo type reboot to exit
+type reboot to exit
+sleep 5
+./authoring/raqet -p secret --clientid testingclient --server http://192.168.13.1:5555 \
+        --output build/testbuild.iso --target iso \
+        --kernel ./openwrt/bin/x86/openwrt-x86-generic-ramfs.bzImage \
+        --initrdextra build/initrd.img --plainiscsiinitiator 192.168.13.1/32
+
+WARNING: VPN not configured, communication will not be encrypted
+(cd testing; sudo ./qemu-client-tap)
+Set 'tap0' persistent and owned by uid 0
+</pre>
+
+<p>As can be seen from this logging a test version of the live CD is mastered
+with some small additions. The root password for this CD is "secret". Qemu
+should start in console (text) mode and the OS will start polling for the
+server on an internal TAP interface.</p>
+
+<p>To stop the client log into the qemu instance: username <b>root</b>,
+password <b>secret</b> and type <b>reboot</b></p>
+
+<h4>Start Server</h4>
+
+<p>The server contains tests in <a href="http://jbehave.org/">JBehave</a>. To
+run the tests run:</p>
+
+<pre>
+acquisition-server$ sudo ant test
+[sudo] password for USERNAME: 
+Buildfile: acquisition-server/build.xml
+
+configure.buildnumber:
+
+configure.properties:
+
+common.configure:
+
+configure:
+
+compile:
+     [echo] log4j-1.2.16/log4j-1.2.16.jar,reifier-0.1.13/reifier-0.1.13.jar,streams-core-2.1.2/streams-core-2.1.2.jar,alfresco-core-5.0.d/alfresco-core-5.0.d.jar,alfresco-jlan-embed-5.0.d/alfresco-jlan-embed-5.0.d.jar,spring-surf-core-configservice-5.0.d/spring-surf-core-configservice-5.0.d.jar,slf4j-api-1.7.12/slf4j-api-1.7.12.jar,slf4j-log4j12-1.7.12/slf4j-log4j12-1.7.12.jar,jna-4.1.0/jna-4.1.0.jar,grizzly-http-server-core-2.3.21/grizzly-http-server-core-2.3.21.jar,jersey-container-grizzly2-http-2.17/jersey-container-grizzly2-http-2.17.jar,jersey-all-2.17/jersey-all-2.17.jar
+
+compile.bootstrap:
+
+compile.test:
+
+test.without-coverage:
+    [junit] Running org.raqet.test.RaqetStories
+    [junit] Tests run: 218, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 132.543 sec
+
+test:
+
+BUILD SUCCESSFUL
+Total time: 2 minutes 14 seconds
+</pre>
+
+<p>The results from the test can be found in the path ./dist/report/test/index.html and should contain a 
+<a href="testreport/index.html">report like this</a>. </p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-71157031-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
