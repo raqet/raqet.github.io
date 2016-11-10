@@ -80,7 +80,10 @@ The details of the case can be viewed.</p>
 
 <p>When the client has booted  it will register at the server. The server will identify the client based on the number embedded in the OS and link the clients disks to a virtual file system that is exported using CIFS. To access the virtual filesystem it needs to be mounted using windows or linux.</p>
 
-<p><img src="images/raqet_MountCIFS_recol.png" alt="Mount using SMB using linux or windows"></p>
+<pre>
+sudo mkdir /mnt/raqet
+sudo mount.cifs -o sec=ntlmv2,nocase,password="" //127.0.0.1/ddshare /mnt/raqet
+</pre>
 
 <p>The virtual filesystem will show a directory scheme consisting of the name of the case and the name of the computer.
 Within this directory several files appear, some of which are physical (stored in /var/raqet) and some are virtual.
