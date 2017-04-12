@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Raqet, Remote Acquisition and Triage : ">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Raqet, Remote Acquisition and Triage</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/raqet">View on GitHub</a>
+
+          <h1 id="project_title">Raqet, Remote Acquisition and Triage</h1>
+          <h2 id="project_tagline"></h2>
+
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>
+<a id="welcome-to-the-raqet-project" class="anchor" href="#welcome-to-the-raqet-project" aria-hidden="true"><span class="octicon octicon-link"></span></a>SMB mount trouble shooting.</h3>
+<p>
+Some people reported problems mounting the SMB share. They reported a non
+informative error like below:
+</p>
+<pre>
+mount.cifs -o sec=ntlmv2,nocase,password="" //127.0.0.1/ddshare /mnt/raqet
+mount error(22): Invalid argument
+Refer to the mount.cifs(8) manual page (e.g. man mount.cifs)
+</pre>
+<p>
+In this case it was caused by the standard <b>smbd</b> conflicting with the
+smb server that is incorporated by the raqet server. This can be seen in the
+netstat -tanp output:
+
+<pre>
+netstat -tanp
+tcp6 0 0 :::5555 :::* LISTEN 2622/java
+tcp6 0 0 :::5556 :::* LISTEN 2622/java
+tcp6 0 0 :::445 :::* LISTEN 716/smbd   &lt;== This is a problem
+tcp6 0 0 :::139 :::* LISTEN 716/smbd
+</pre>
+
+In the output above the smbd has claimed port 445 and 139 blocking the
+implementation of the raqet server as shown in the expected output.
+
+<pre>
+netstat -tanp
+tcp6 0 0 :::5555 :::* LISTEN 3048/java
+tcp6 0 0 :::5556 :::* LISTEN 3048/java
+tcp6 0 0 :::445 :::* LISTEN 3048/java
+tcp6 0 0 :::139 :::* LISTEN 3048/java
+</pre>
+
+The raqet server also writes logging to /var/log/raqet/.
+
+</p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-71157031-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>

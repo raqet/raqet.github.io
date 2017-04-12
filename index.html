@@ -85,6 +85,8 @@ sudo mkdir /mnt/raqet
 sudo mount.cifs -o sec=ntlmv2,nocase,password="" //127.0.0.1/ddshare /mnt/raqet
 </pre>
 
+When you have problems mounting the smb share, check the <a href="smberrors.html">troubleshooting hints.</a>
+
 <p>The virtual filesystem will show a directory scheme consisting of the name of the case and the name of the computer.
 Within this directory several files appear, some of which are physical (stored in /var/raqet) and some are virtual.
 The virtual file shows as a raw image with the size and content of the physical disk of the remote computer. The content is however not physically stored on the server but retreived on the fly.</p>
